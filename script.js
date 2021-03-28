@@ -1,3 +1,5 @@
+var username = prompt('what is your username')
+
 const canvas = document.querySelector('canvas')
 
 canvas.width = window.innerWidth
