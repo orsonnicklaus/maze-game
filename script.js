@@ -1,3 +1,5 @@
+var username = prompt('what is your username')
+
 const canvas = document.querySelector('canvas')
 
 canvas.width = window.innerWidth
@@ -9,10 +11,10 @@ const gridWidth = Math.floor(window.innerWidth / numGrids)
 const halfGridWidth = gridWidth / 2
 
 function player({ centerX, centerY }) {
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, halfGridWidth, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'purple';
-    ctx.fill();
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, halfGridWidth, 0, 2 * Math.PI, false)
+    ctx.fillStyle = 'purple'
+    ctx.fill()
 }
 
 function wall(x, y, height) {
