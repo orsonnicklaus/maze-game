@@ -1,32 +1,55 @@
 // var username = prompt('what is your username')
 window.requestAnimationFrame(draw);
 
-function draw() {
-    console.log(document.body)
-    document.body.addEventListener('keydown', handleCharacterMove)
+document.body.addEventListener('keydown', handleCharacterMove)
 
-    function handleCharacterMove(event) {
-        // debugger
-        event.preventDefault();
+const numGrids = 30
+const gridWidth = Math.floor(window.innerWidth / numGrids)
+const halfGridWidth = gridWidth / 2
+let charPosition = {
+    x: halfGridWidth,
+    y: window.innerHeight / 2,
+}
 
-        const { code } = event;
+function handleCharacterMove(event) {
+    // debugger
+    // event.preventDefault();
 
-        switch(code) {
-            case "ArrowLeft":
-                console.log('called arrow left');
-                moveRight();
-                break;
-            case "ArrowRight":
-                console.log('called arrow right');
-                break;
-            case "ArrowUp":
-                console.log('called arrow up');
-                break;
-            case "ArrowDown":
-                console.log('called arrow down');
-                break;
-        }
+    const { code } = event;
+
+    switch(code) {
+        case "ArrowLeft":
+            moveLeft(charPosition);
+            break;
+        case "ArrowRight":
+
+            moveRight(charPosition);
+            break;
+        case "ArrowUp":
+            moveUp(charPosition);
+            break;
+        case "ArrowDown":
+            moveDown(charPosition);
+            break;
     }
+}
+
+function moveLeft(previousPos) {
+    charPosition.x = previousPos.x - gridWidth;
+}
+function moveRight(previousPos) {
+    charPosition.x = previousPos.x + gridWidth;
+}
+function moveUp(previousPos) {
+    charPosition.y = previousPos.y - gridWidth;
+}
+function moveDown(previousPos) {
+    charPosition.y = previousPos.y + gridWidth;
+}
+
+
+function draw() {
+
 
     const canvas = document.querySelector('canvas')
 
@@ -34,9 +57,6 @@ function draw() {
     canvas.height = window.innerHeight
 
     const ctx = canvas.getContext('2d')
-    const numGrids = 30
-    const gridWidth = Math.floor(window.innerWidth / numGrids)
-    const halfGridWidth = gridWidth / 2
 
     function player({ centerX, centerY }) {
         ctx.beginPath()
@@ -58,10 +78,8 @@ function draw() {
     wall(gridWidth * (numGrids / 3), gridWidth * 4, gridWidth * 10)
     wall(gridWidth * (numGrids - 8), gridWidth * 2, gridWidth * 8)
 
-    player({ centerX: halfGridWidth, centerY: window.innerHeight / 2 })
-    function moveRight() {
-        player()
-    }
+    player({ centerX: charPosition.x, centerY: charPosition.y })
+
 
     window.requestAnimationFrame(draw);
 }
