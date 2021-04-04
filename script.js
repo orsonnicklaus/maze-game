@@ -4,26 +4,44 @@ window.requestAnimationFrame(draw);
 document.body.addEventListener('keydown', handleCharacterMove)
 
 const numGrids = 30
-const gridWidth = Math.floor(window.innerWidth / numGrids)
+const windowWidth = window.innerWidth
+const windowHeight = window.innerHeight
+const canvasWidth = windowWidth - (windowWidth % numGrids) // gets the next lowest number that is evenly divisible by numGrids
+const gridWidth = Math.floor(canvasWidth / numGrids)
 const halfGridWidth = gridWidth / 2
+const numVertGrids = Math.floor(windowHeight / gridWidth)
+const canvasHeight = windowHeight - (windowHeight % numVertGrids)
+// debugger
+const playerStartY = numVertGrids * halfGridWidth + halfGridWidth;
+
+const wall1pos = {
+    x: gridWidth * (numGrids / 2),
+    y: 0,
+    h: gridWidth * 6,
+}
+
+
+// debugger
 let charPosition = {
     x: halfGridWidth,
-    y: window.innerHeight / 2,
+    y: playerStartY,
 }
 
 function handleCharacterMove(event) {
     // debugger
     // event.preventDefault();
-
     const { code } = event;
 
     switch(code) {
         case "ArrowLeft":
-            moveLeft(charPosition);
+            if (canMove(code, charPosition)) {
+                moveLeft(charPosition);
+            }
             break;
         case "ArrowRight":
-
-            moveRight(charPosition);
+            if (canMove(code, charPosition)) {
+                moveRight(charPosition);
+            }
             break;
         case "ArrowUp":
             moveUp(charPosition);
@@ -34,17 +52,48 @@ function handleCharacterMove(event) {
     }
 }
 
-function moveLeft(previousPos) {
-    charPosition.x = previousPos.x - gridWidth;
+function moveLeft(currentPos) {
+    charPosition.x = currentPos.x - gridWidth;
 }
-function moveRight(previousPos) {
-    charPosition.x = previousPos.x + gridWidth;
+function moveRight(currentPos) {
+    charPosition.x = currentPos.x + gridWidth;
 }
-function moveUp(previousPos) {
-    charPosition.y = previousPos.y - gridWidth;
+function moveUp(currentPos) {
+    charPosition.y = currentPos.y - gridWidth;
 }
-function moveDown(previousPos) {
-    charPosition.y = previousPos.y + gridWidth;
+function moveDown(currentPos) {
+    charPosition.y = currentPos.y + gridWidth;
+}
+
+function canMove(code, currentPos) {
+    let canMove = true;
+    switch(code) {
+        case "ArrowLeft":
+            // debugger
+            if (currentPos.x <= gridWidth / 2) {
+                canMove = false;
+            }
+
+            if (currentPos.x === wall1pos.x + (gridWidth + halfGridWidth) && (currentPos.y > wall1pos.y && currentPos.y < (wall1pos.y + wall1pos.h))) {
+                canMove = false
+            }
+            return canMove
+        case "ArrowRight":
+            canMove = true;
+            if (currentPos.x >= canvasWidth - gridWidth) {
+                canMove = false;
+            }
+            if (currentPos.x === wall1pos.x - halfGridWidth && (currentPos.y > wall1pos.y && currentPos.y < (wall1pos.y + wall1pos.h))) {
+                canMove = false
+            }
+            return canMove;
+        case "ArrowUp":
+            // moveUp(charPosition);
+            break;
+        case "ArrowDown":
+            // moveDown(charPosition);
+            break;
+    }
 }
 
 
@@ -53,8 +102,8 @@ function draw() {
 
     const canvas = document.querySelector('canvas')
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    canvas.width = canvasWidth
+    canvas.height = canvasHeight
 
     const ctx = canvas.getContext('2d')
 
@@ -74,9 +123,12 @@ function draw() {
         ctx.stroke()
     }
 
-    wall(gridWidth * (numGrids / 2), 0, gridWidth * 6)
+    wall(wall1pos.x, wall1pos.y, wall1pos.h)
     wall(gridWidth * (numGrids / 3), gridWidth * 4, gridWidth * 10)
     wall(gridWidth * (numGrids - 8), gridWidth * 2, gridWidth * 8)
+
+
+
 
     player({ centerX: charPosition.x, centerY: charPosition.y })
 
